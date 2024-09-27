@@ -1,7 +1,7 @@
 #####################################################
 ############### CURSO R - SBIB ######################
 ######## Por Jessica Magno e Joao Muzzi #############
-
+# https://github.com/jmuzzi/sbib2024
 ## PRATICA: Parte 2
 
 library(tidyverse)
