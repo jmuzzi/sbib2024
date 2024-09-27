@@ -30,9 +30,9 @@ head(survival_ov)
 
 rm(url)
 
-## Ajustando os nomes das amostras
+#-- Ajustando os nomes das amostras e ensembl id
 
-# Manipulando os nomes de genes na matriz de contagem
+# Manipulando os identificadores ensembl id na matriz de contagem
 rownames(gexp_ov)
 rownames(gexp_ov) <- gexp_ov$Ensembl_ID
 head(gexp_ov)[1:5]
