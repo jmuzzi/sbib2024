@@ -4,16 +4,12 @@
 
 ## PRATICA: Manipulacao de dados
 
-#-- Pacotes que serao utilizados
-library(ggplot2)
-library(cowplot)
-
 #-- Definindo o diretorio
-setwd("")
+setwd("Documentos/SBIB_2024/")
 
 #-- Download dos dados genomicos
 url = "https://gdc-hub.s3.us-east-1.amazonaws.com/download/TCGA-OV.htseq_counts.tsv.gz"
-download.file(url = url, destfile = "tcga_ov/gexp,txt")
+download.file(url = url, destfile = "tcga_ov/gexp.txt")
 
 gexp_ov <- read.delim("tcga_ov/gexp.txt", dec = ".")
 head(gexp_ov)[1:5]
@@ -36,22 +32,24 @@ rm(url)
 
 ## Ajustando os nomes das amostras
 
-# Manipulando os nomes de amostras na matriz de contagem
+# Manipulando os nomes de genes na matriz de contagem
 rownames(gexp_ov)
 rownames(gexp_ov) <- gexp_ov$Ensembl_ID
 head(gexp_ov)[1:5]
 identical(rownames(gexp_ov), gexp_ov$Ensembl_ID) #TRUE
 gexp_ov <- gexp_ov[,-1]
 head(gexp_ov)[1:5]
+
+ens_gexp <- rownames(gexp_ov)
+ens_gexp <- sub("\\..*", "", ens_gexp)
+rownames(gexp_ov) <- ens_gexp
+head(gexp_ov)[1:5]
+
+# Manipulando os nomes das amostras na matriz de contagem
 colnames(gexp_ov)
 amostras_gexp <- colnames(gexp_ov)
 amostras_gexp <- gsub("\\.", "-", amostras_gexp)
 colnames(gexp_ov) <- amostras_gexp
-
-# Manipulando os ens id na matriz de contagem
-ens_gexp <- rownames(gexp_ov)
-ens_gexp <- sub("\\..*", "", ens_gexp)
-rownames(gexp_ov) <- ens_gexp
 head(gexp_ov)[1:5]
 
 rm(ens_gexp, amostras_gexp)
@@ -63,7 +61,7 @@ survival_ov <- survival_ov[survival_ov$sample %in% colnames(gexp_ov),]
 
 setdiff(colnames(gexp_ov),survival_ov$sample) # "TCGA-04-1357-01A"
 
-which(colnames(gexp_ov) == "TCGA-04-1357-01A")
+which(colnames(gexp_ov) == "TCGA-04-1357-01A") #102
 gexp_ov <- gexp_ov[,-102]
 
 setdiff(colnames(gexp_ov),survival_ov$sample)
@@ -119,6 +117,10 @@ identical(rownames(BRCA2_ov), rownames(clinical_ov)) #TRUE
 clinical_ov <- cbind(clinical_ov, BRCA2_ov)
 colnames(clinical_ov)[100]
 colnames(clinical_ov)[100] <- "BRCA2"
+
+library(ggplot2)
+library(cowplot)
+
 
 # Criando um boxplot
 stage_brca1 <- ggplot(clinical_ov[complete.cases(clinical_ov$clinical_stage),],
